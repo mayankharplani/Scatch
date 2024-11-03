@@ -1,0 +1,23 @@
+RESEARCH ON USER WHAT DETAILS ARE REQUIRED FOR MAKING SCHEMA
+
+user Model
+
+fullname - String
+email - String,
+password - String,
+cart - Array,
+isadmin - boolean
+orders - Array
+contact number - number
+picture -  db
+
+
+
+PRODUCT MODEL ->
+image
+name
+price
+discount
+bgcolour
+panelcolour
+textcolour
