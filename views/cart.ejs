@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="w-full flex justify-between px-5 py-3">
+        <h3 class="text-3xl px-10">Scatch</h3>
+        <% var loggedin = typeof loggedin !== "undefined" ? loggedin : true %>
+        <% if(loggedin) { %>
+            <div class="flex gap-8 text-xl mr-10">
+                <a href="/shop">Shop</a>
+                <a href="/cart">Cart</a>
+                <a href="/profile">My Account</a>
+                <a class="text-red-600" href="/users/logout">Logout</a>
+            </div>
+        <% } %>
+    </nav>
+    <% if(remove.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 bg-green-500 rounded-md">
+            <span class="inline-block mt-1 mb-1 text-white">
+                <%= remove %>
+            </span>
+        </div>
+    <% } %>
+    <% if(added.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 bg-green-500 rounded-md">
+            <span class="inline-block mt-1 mb-1 text-white">
+                <%= added %>
+            </span>
+        </div>
+    <% } %>
+    <div class="flex flex-wrap px-20 py-20 items-between">
+        <!-- Cart Items Section -->
+        <div class="w-[65%]">
+            <% for (let key in cartSummary) { %>
+                <div class="w-full flex items-start gap-10 mb-10">
+                    <div class="w-[60%] rounded-md overflow-hidden border">
+                        <div class="w-full flex justify-center items-center h-80 bg-[<%= cartSummary[key].product.bgcolour %>]">
+                            <img class="h-[18rem]" src="data:image/jpeg;base64, <%= cartSummary[key].product.image.toString('base64') %>" alt="">
+                        </div>
+                        <div class="w-full flex justify-between px-5 py-4 bg-[<%= cartSummary[key].product.panelcolour %>]">
+                            <h3 class="text-2xl"><%= cartSummary[key].product.name %></h3>
+                            <div class="flex items-center gap-2">
+                                <form action="/cart/increase/<%= cartSummary[key].product._id %>" method="POST">
+                                    <button type="submit" class="w-7 h-7 bg-white flex rounded-full items-center justify-center ri-add-line"></button>
+                                </form>
+                                <div class="px-2 py-1 rounded-md bg-white text-black"><%= cartSummary[key].count %></div>
+                                <form action="/cart/decrease/<%= cartSummary[key].product._id %>" method="POST">
+                                    <button type="submit" class="w-7 h-7 bg-white flex rounded-full items-center justify-center ri-subtract-line"></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="flex text-white items-center justify-between px-5 py-3 bg-[<%= cartSummary[key].product.textcolour %>]">
+                            <h4 class="text-lg">Net Total</h4>
+                            <h2 class="text-lg">₹ <%= ((Number(cartSummary[key].product.price) - Number(cartSummary[key].product.discount)) * cartSummary[key].count).toFixed(2) %></h2>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Price Breakdown for Total Cart -->
+        <div class="w-[35%] border rounded-md p-5 shadow-md h-[50%]">
+            <h3 class="text-xl mb-5">Price Breakdown</h3>
+            <div class="px-2">
+                <% let totalMRP = 0; let totalDiscount = 0; %>
+                <% for (let key in cartSummary) { %>
+                    <% totalMRP += cartSummary[key].product.price * cartSummary[key].count; %>
+                    <% totalDiscount += cartSummary[key].product.discount * cartSummary[key].count; %>
+                <% } %>
+                <div class="flex mt-2">
+                    <h4 class="w-1/2">Total MRP</h4>
+                    <h4>₹ <%= totalMRP.toFixed(2) %></h4>
+                </div>
+                <div class="flex mt-2">
+                    <h4 class="w-1/2">Discount on MRP</h4>
+                    <h4>₹ <%= totalDiscount.toFixed(2) %></h4>
+                </div>
+                <div class="flex mt-2">
+                    <h4 class="w-1/2">Platform Fee</h4>
+                    <h4>₹ 20.00</h4>
+                </div>
+                <div class="flex mt-2">
+                    <h4 class="w-1/2">Shipping Fee</h4>
+                    <h4>FREE</h4>
+                </div>
+                <div class="w-full h-[1px] bg-gray-300 mt-5"></div>
+                <div class="flex mt-5">
+                    <h3 class="w-1/2 font-semibold text-lg">Total Amount</h3>
+                    <h3 class="font-semibold text-lg text-green-600">₹ <%= totalBill.toFixed(2) %></h3>
+                </div>
+                <div class="flex mt-5">
+                    <form action="/cart/placeorder" method="POST" class="w-full">
+                        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">
+                            Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

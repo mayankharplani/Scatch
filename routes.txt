@@ -1,0 +1,6 @@
+/ -> singup or login
+/shop -> shop
+/users/cart  -> user ki cart ho
+/admin -> admin panel
+/owner/products -> show all products created by owner
+/owner/admin -> show admin panel to create product
